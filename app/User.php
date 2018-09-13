@@ -27,4 +27,15 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * undocumented function
+     *
+     * @return void
+     * @author
+     **/
+    public function messages ()
+    {
+        return $this->hasMany(Message::class);
+    }
 }
