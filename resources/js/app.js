@@ -15,7 +15,10 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
+Vue.component('chat', require('./components/chat/Chat.vue'));
+Vue.component('chat-messages', require('./components/chat/Messages.vue'));
+Vue.component('chat-message', require('./components/chat/Message.vue'));
+Vue.component('chat-users', require('./components/chat/Users.vue'));
 
 const app = new Vue({
     el: '#app'
@@ -26,26 +29,26 @@ const app = new Vue({
 document.addEventListener('DOMContentLoaded', function () {
     // Get all "navbar-burger" elements
     const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-    
+
     // Check if there are any navbar burgers
     if ($navbarBurgers.length > 0) {
-        
+
         // Add a click event on each of them
         $navbarBurgers.forEach(function ($el) {
             $el.addEventListener('click', function () {
-                
+
                 // Get the target from the "data-target" attribute
                 let target = $el.dataset.target;
                 let $target = document.getElementById(target);
-                
+
                 // Toggle the class on both the "navbar-burger" and the "navbar-menu"
                 $el.classList.toggle('is-active');
                 $target.classList.toggle('is-active');
-                
+
             });
         });
     }
-    
+
 });
 
 
