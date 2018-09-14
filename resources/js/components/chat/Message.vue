@@ -1,14 +1,14 @@
 <template>
-    <div class="chat__message chat__message--own">
-        <strong class="chat__message-user">Mpilo</strong>
-        <span class="chat__message-timestamp">12 min ago.</span>
-        <p class="chat__message-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <div class="chat__message" :class="{'chat__message--own': message.selfOwned}">
+        <strong class="chat__message-user">{{ message.user.name }}</strong>
+        <span class="chat__message-timestamp">{{ message.created_at }}</span>
+        <p class="chat__message-body">{{ message.body }}</p>
     </div>
 </template>
 
 <script>
     export default {
-
+        props : ['message']
     }
 </script>
 
@@ -18,7 +18,7 @@
             padding: 15px;
             border-bottom: 1px solid #eee;
             &--own {
-                background-color: #f0f0f0f;
+                background-color: #f0f0f0;
             }
             &-user {
                 font-weight: 800;

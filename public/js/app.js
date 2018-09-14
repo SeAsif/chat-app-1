@@ -62884,7 +62884,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            messages: []
+        };
+    },
+    mounted: function mounted() {
+        var _this = this;
+
+        axios.get('chat/messages').then(function (response) {
+            _this.messages = response.data;
+        });
+    }
+});
 
 /***/ }),
 /* 57 */
@@ -62894,7 +62907,16 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "chat__messages" }, [_c("chat-message")], 1)
+  return _c(
+    "div",
+    { staticClass: "chat__messages" },
+    _vm._l(_vm.messages, function(message) {
+      return _c("chat-message", {
+        key: message.id,
+        attrs: { message: message }
+      })
+    })
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -62972,7 +62994,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['message']
+});
 
 /***/ }),
 /* 60 */
@@ -62982,28 +63006,28 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "chat__message chat__message--own" }, [
-      _c("strong", { staticClass: "chat__message-user" }, [_vm._v("Mpilo")]),
+  return _c(
+    "div",
+    {
+      staticClass: "chat__message",
+      class: { "chat__message--own": _vm.message.selfOwned }
+    },
+    [
+      _c("strong", { staticClass: "chat__message-user" }, [
+        _vm._v(_vm._s(_vm.message.user.name))
+      ]),
       _vm._v(" "),
       _c("span", { staticClass: "chat__message-timestamp" }, [
-        _vm._v("12 min ago.")
+        _vm._v(_vm._s(_vm.message.created_at))
       ]),
       _vm._v(" "),
       _c("p", { staticClass: "chat__message-body" }, [
-        _vm._v(
-          "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        )
+        _vm._v(_vm._s(_vm.message.body))
       ])
-    ])
-  }
-]
+    ]
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -63493,7 +63517,7 @@ exports = module.exports = __webpack_require__(48)(false);
 
 
 // module
-exports.push([module.i, "\n.chat__message {\n  padding: 15px;\n  border-bottom: 1px solid #eee;\n}\n.chat__message--own {\n    background-color: #f0f0f0f;\n}\n.chat__message-user {\n    font-weight: 800;\n}\n.chat__message-timestamp {\n    color: #aaa;\n}\n.chat__message-body {\n    margin-bottom: 0;\n    white-space: pre-wrap;\n}\n", ""]);
+exports.push([module.i, "\n.chat__message {\n  padding: 15px;\n  border-bottom: 1px solid #eee;\n}\n.chat__message--own {\n    background-color: #f0f0f0;\n}\n.chat__message-user {\n    font-weight: 800;\n}\n.chat__message-timestamp {\n    color: #aaa;\n}\n.chat__message-body {\n    margin-bottom: 0;\n    white-space: pre-wrap;\n}\n", ""]);
 
 // exports
 
