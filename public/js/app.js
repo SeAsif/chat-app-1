@@ -62773,7 +62773,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            body: null
+        };
+    },
+
+    methods: {
+        handleMessageInput: function handleMessageInput(e) {
+            if (e.keyCode === 13 && !e.shiftKey) {
+                e.preventDefault();
+                this.send();
+            }
+        },
+        send: function send() {
+            console.log(this.body);
+        }
+    }
+});
 
 /***/ }),
 /* 54 */
@@ -62786,31 +62804,46 @@ var render = function() {
   return _c(
     "div",
     { staticClass: "chat" },
-    [_c("chat-messages"), _vm._v(" "), _vm._m(0)],
-    1
-  )
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("form", { attrs: { action: "" } }, [
-      _c("div", { staticClass: "field" }, [
-        _c("div", { staticClass: "control" }, [
-          _c("textarea", {
-            staticClass: "textarea",
-            attrs: { placeholder: "Textarea" }
-          }),
-          _vm._v(" "),
-          _c("span", [
-            _vm._v("Hit return to send or CTRL + Return for a new line.")
+    [
+      _c("chat-messages"),
+      _vm._v(" "),
+      _c("form", { attrs: { action: "" } }, [
+        _c("div", { staticClass: "field" }, [
+          _c("div", { staticClass: "control" }, [
+            _c("textarea", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.body,
+                  expression: "body"
+                }
+              ],
+              staticClass: "textarea",
+              attrs: { placeholder: "Textarea" },
+              domProps: { value: _vm.body },
+              on: {
+                keydown: _vm.handleMessageInput,
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.body = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("p", { staticClass: "help-message" }, [
+              _vm._v("Hit return to send or SHIFT + Return for a new line.")
+            ])
           ])
         ])
       ])
-    ])
-  }
-]
+    ],
+    1
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -63174,7 +63207,7 @@ exports = module.exports = __webpack_require__(48)(false);
 
 
 // module
-exports.push([module.i, "\n.chat {\n    border: 1px solid #d3e0e9;\n    border-radius: 3px;\n}\nform {\n    padding: 10px;\n}\n.field {\n    padding: 5px 10px;\n}\nspan {\n    padding-top: 10px;\n}\n", ""]);
+exports.push([module.i, "\n.chat {\n    border: 1px solid #d3e0e9;\n    border-radius: 3px;\n}\nform {\n    padding: 10px;\n}\n.field {\n    padding: 5px 10px;\n}\n.help-message {\n    color: #808080;\n    margin-top: 10px;\n}\n", ""]);
 
 // exports
 

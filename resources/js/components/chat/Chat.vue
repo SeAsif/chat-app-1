@@ -4,8 +4,8 @@
         <form action="">
             <div class="field">
               <div class="control">
-                <textarea class="textarea" placeholder="Textarea"></textarea>
-                <span>Hit return to send or CTRL + Return for a new line.</span>
+                <textarea class="textarea" placeholder="Textarea" v-model="body" @keydown="handleMessageInput"></textarea>
+                <p class="help-message">Hit return to send or SHIFT + Return for a new line.</p>
               </div>
             </div>
         </form>
@@ -14,7 +14,22 @@
 
 <script>
     export default {
-
+        data () {
+            return {
+                body: null
+            }
+        },
+        methods : {
+            handleMessageInput (e) {
+                if (e.keyCode === 13 && !e.shiftKey) {
+                    e.preventDefault()
+                    this.send()
+                }
+            },
+            send () {
+                console.log(this.body)
+            }
+        }
     }
 </script>
 
@@ -29,7 +44,8 @@
     .field {
         padding: 5px 10px;
     }
-    span {
-        padding-top: 10px;
+    .help-message {
+        color: #808080;
+        margin-top: 10px;
     }
 </style>
