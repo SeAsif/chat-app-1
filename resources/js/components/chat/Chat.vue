@@ -13,6 +13,8 @@
 </template>
 
 <script>
+    import Bus from '../../bus'
+    import moment from 'moment'
     export default {
         data () {
             return {
@@ -26,8 +28,27 @@
                     this.send()
                 }
             },
+            buildTempMessage () {
+                let tempId = Date.now();
+                return {
+                    id: tempId,
+                    body: this.body,
+                    created_at: moment().utc(0).format('YYYY-MM-DD HH:mm:ss'),
+                    selfOwned: true,
+                    user: {
+                        name: Laravel.user.name
+                    }
+                }
+            },
             send () {
-                console.log(this.body)
+                // send ajax request and then update ui but we'll build up a temp message then go ahead and update the ui then send a request to the backend if it fails then revert the change to the ui
+                // no empty data
+                if (!this.body || this.body.trim() === '') {
+                    return 
+                }
+                let tempMessage = this.buildTempMessage();
+                Bus.$emit('message.added', tempMessage)
+                this.body = null
             }
         }
     }
