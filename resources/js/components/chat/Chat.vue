@@ -18,11 +18,13 @@
     export default {
         data () {
             return {
-                body: null
+                body: null,
+                bodyBackedUp: null
             }
         },
         methods : {
             handleMessageInput (e) {
+                this.bodyBackedUp = this.body// if request fails clone remains
                 if (e.keyCode === 13 && !e.shiftKey) {
                     e.preventDefault()
                     this.send()
@@ -48,6 +50,12 @@
                 }
                 let tempMessage = this.buildTempMessage();
                 Bus.$emit('message.added', tempMessage)
+                axios.post('/chat/messages', {//check via network tab
+                    body: this.body.trim()// remove left and right hand whitespaces
+                }).catch( () => {//no need for success as we're sending a temp message to the ui
+                    this.body = this.bodyBackedUp//if it fails return clone of intended message
+                    Bus.$emit('message.removed', tempMessage)
+                })
                 this.body = null
             }
         }

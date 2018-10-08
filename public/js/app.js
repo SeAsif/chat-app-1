@@ -41285,12 +41285,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            body: null
+            body: null,
+            bodyBackedUp: null
         };
     },
 
     methods: {
         handleMessageInput: function handleMessageInput(e) {
+            this.bodyBackedUp = this.body; // if request fails clone remains
             if (e.keyCode === 13 && !e.shiftKey) {
                 e.preventDefault();
                 this.send();
@@ -41309,6 +41311,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             };
         },
         send: function send() {
+            var _this = this;
+
             // send ajax request and then update ui but we'll build up a temp message then go ahead and update the ui then send a request to the backend if it fails then revert the change to the ui
             // no empty data
             if (!this.body || this.body.trim() === '') {
@@ -41316,6 +41320,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
             var tempMessage = this.buildTempMessage();
             __WEBPACK_IMPORTED_MODULE_0__bus__["a" /* default */].$emit('message.added', tempMessage);
+            axios.post('/chat/messages', { //check via network tab
+                body: this.body.trim() // remove left and right hand whitespaces
+            }).catch(function () {
+                //no need for success as we're sending a temp message to the ui
+                _this.body = _this.bodyBackedUp; //if it fails return clone of intended message
+                __WEBPACK_IMPORTED_MODULE_0__bus__["a" /* default */].$emit('message.removed', tempMessage);
+            });
             this.body = null;
         }
     }
@@ -41493,6 +41504,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             messages: []
         };
     },
+
+    methods: {
+        removeMessage: function removeMessage(id) {
+            this.messages = this.messages.filter(function (message) {
+                return message.id !== id;
+            });
+        }
+    },
     mounted: function mounted() {
         var _this = this;
 
@@ -41506,6 +41525,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (message.selfOwned) {
                 _this.$refs.messages.scrollTop = 0;
             }
+        }).$on('message.removed', function (message) {
+            _this.removeMessage(message.id);
         });
     }
 });
