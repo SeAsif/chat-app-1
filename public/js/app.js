@@ -67044,6 +67044,8 @@ Echo.join('chat').here(function (users) {
     __WEBPACK_IMPORTED_MODULE_0__bus__["a" /* default */].$emit('users.joined', user);
 }).leaving(function (user) {
     __WEBPACK_IMPORTED_MODULE_0__bus__["a" /* default */].$emit('users.left', user);
+}).listen('Chat.MessageCreated', function (e) {
+    __WEBPACK_IMPORTED_MODULE_0__bus__["a" /* default */].$emit('message.added', e.message);
 });
 
 /***/ }),
