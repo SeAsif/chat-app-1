@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 class ChatroomTest extends DuskTestCase
 {
     use DatabaseMigrations;
+
     /**
      * @test A user can send a message.
      *
@@ -28,8 +29,30 @@ class ChatroomTest extends DuskTestCase
                 ->assertInputValue('@body', '')// should be empty after message is sent
                 ->with('.chat__messages', function ($messages) use ($user) {
                      $messages->assertSee('Hi there')
-                     ->assertSee($user->name); // always clear cache
+                     ->assertSee($user->name) // always clear cache
+                     ->logout();
                  });
+        });
+    }
+
+    /**
+     * @test A user can send a multiline message.
+     *
+     * @return void
+     */
+    public function a_user_can_send_a_multiline_message()
+    {
+        $user = factory(User::class)->create();
+
+        $this->browse(function (Browser $browser) use ($user) {
+            $browser->loginAs($user)
+                    ->visit(new ChatPage)
+                    ->typeMessage('Multiline Message')
+                    ->keys('@body', '{shift}', '{enter}')
+                    ->append('@body', 'New line')
+                    ->sendMessage()
+                    ->assertSeeIn('@chatMessages', "Multiline Message\nNew line")
+                    ->logout();
         });
     }
 }

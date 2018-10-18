@@ -14,7 +14,7 @@ abstract class Page extends BasePage
     public static function siteElements()
     {
         return [
-            '@chatMessages' => '.chat_messages',
+            '@chatMessages' => '.chat__messages',
         ];
     }
 }
