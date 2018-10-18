@@ -67806,7 +67806,7 @@ var render = function() {
                 }
               ],
               staticClass: "textarea",
-              attrs: { placeholder: "Textarea" },
+              attrs: { id: "body", placeholder: "Textarea" },
               domProps: { value: _vm.body },
               on: {
                 keydown: _vm.handleMessageInput,

@@ -4,7 +4,7 @@
         <form action="">
             <div class="field">
               <div class="control">
-                <textarea class="textarea" placeholder="Textarea" v-model="body" @keydown="handleMessageInput"></textarea>
+                <textarea id="body" class="textarea" placeholder="Textarea" v-model="body" @keydown="handleMessageInput"></textarea>
                 <p class="help-message">Hit return to send or SHIFT + Return for a new line.</p>
               </div>
             </div>
