@@ -77,7 +77,30 @@ class ChatroomTest extends DuskTestCase
                 $browser->keys('@body', '{shift}', '{enter}')
                 ->keys('@body', '{shift}', '{enter}')
                 ->sendMessage()
-                ->assertDontSeeIn('@body', $user->name);
+                ->assertDontSeeIn('@body', $user->name)
+                ->logout();
+        });
+    }
+
+    /**
+     * @test Messages are ordered by latest first.
+     *
+     * @return void
+     */
+    public function messages_are_ordered_by_latest_first()
+    {
+        $user = factory(User::class)->create();
+
+        $this->browse(function (Browser $browser) use ($user) {
+            $browser->loginAs($user)
+                    ->visit(new ChatPage);
+            foreach (['Message One', 'Message Two', 'Message Three'] as $message) {
+                $browser->typeMessage($message)
+                ->sendMessage()
+                ->waitFor('@firstChatMessage')// make sure we have the element available before we check it
+                ->assertSeeIn('@firstChatMessage', $message);
+            }
+            $browser->logout();
         });
     }
 }
