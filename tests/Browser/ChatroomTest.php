@@ -29,9 +29,9 @@ class ChatroomTest extends DuskTestCase
                 ->assertInputValue('@body', '')// should be empty after message is sent
                 ->with('.chat__messages', function ($messages) use ($user) {
                      $messages->assertSee('Hi there')
-                     ->assertSee($user->name) // always clear cache
-                     ->logout();
-                 });
+                     ->assertSee($user->name); // always clear cache
+                 })
+                 ->logout();
         });
     }
 
@@ -101,6 +101,29 @@ class ChatroomTest extends DuskTestCase
                 ->assertSeeIn('@firstChatMessage', $message);
             }
             $browser->logout();
+        });
+    }
+
+    /**
+     * @test A user's message is highlighted as their own.
+     *
+     * @return void
+     */
+    public function a_users_message_is_highlighted_as_their_own()
+    {
+        $user = factory(User::class)->create();
+
+        $this->browse(function (Browser $browser) use ($user) {
+            $browser->loginAs($user)
+                    ->visit(new ChatPage)
+                    ->typeMessage('My Message')
+                    ->sendMessage()
+                    ->waitFor('@ownMessage')
+                    ->with('@ownMessage', function ($message) use ($user) {
+                        $message->assertSee('My Message')
+                        ->assertSee($user->name);
+                    })
+                    ->logout();
         });
     }
 }
