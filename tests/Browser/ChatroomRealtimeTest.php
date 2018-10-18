@@ -22,30 +22,37 @@ class ChatroomTest extends DuskTestCase
         $users = factory(User::class, 3)->create();
         
         $this->browse(function ($browserOne, $browserTwo, $browserThree) use ($users) {
-            $browserOne->loginAs($users->get(0))
+           $browsers = [$browserOne, $browserTwo, $browserThree];
+           foreach ($browsers as $index => $browser) {
+               $browser->loginAs($users->get($index))
                 ->assertAuthenticated()
                 ->visit(new ChatPage);
-  
-            $browserTwo->loginAs($users->get(1))
-                ->assertAuthenticated()
-                ->visit(new ChatPage);
+           }
 
-            $browserThree->loginAs($users->get(2))
-                ->assertAuthenticated()
-                ->visit(new ChatPage);
+           $browserOne->typeMessage('Hi There.')
+           ->sendMessage();
 
-            $browserOne->typeMessage('Hi there')
-            ->sendMessage();
+           foreach (array_slice($browsers, 1, 2) as $index => $browser) {
+               $browser->waitFor('@firstChatMessage')
+               ->with('@chatMessages', function ($messages) use ($users) {
+                   $messages->assertSee('Hi There.')
+                   ->assertSee($users->get(0)->name)
+                   ->assertMissing('@ownMessage');
+               });
+           }
 
-            $browserTwo->pause(1000)->with('@chatMessages', function ($messages) use ($users) {
-                $messages->assertSee('Hi there')
-                    ->assertSee($users->get(0)->name);
-            });
+           $browserThree->typeMessage('Hello :)')
+           ->sendMessage();
 
-            $browserThree->pause(1000)->with('@chatMessages', function ($messages) use ($users) {
-                $messages->assertSee('Hi there')
-                    ->assertSee($users->get(0)->name);
-            });
+           foreach (array_slice($browsers, 0, 1) as $index => $browser) {
+               $browser->waitForText('Hello :)')
+               ->with('@chatMessages', function ($messages) use ($users) {
+                   $messages->assertSee('Hello :)')
+                   ->assertSee($users->get(2)->name);
+               });
+           }
+
+
         });
     }
 }
