@@ -55,16 +55,13 @@ class ChatroomTest extends DuskTestCase
     }
 
     /**
-     * @test A user can see messages from other users.
+     * @test Users are added to the online list when joining.
      *
      * @return void
      */
     public function users_are_added_to_the_online_list_when_joining()
     {
         $users = factory(User::class, 2)->create();
-
-        //$test_user = $users->get(0);
-        //$test_user->password = bcrypt('zaq123');
         
         $this->browse(function ($browserOne, $browserTwo) use ($users) {
             $browserOne->loginAs($users->get(0))
@@ -81,6 +78,37 @@ class ChatroomTest extends DuskTestCase
                 $online->waitForText($users->get(1)->name)
                 ->assertSee($users->get(1)->name)
                 ->assertSee('2 users online');
+            });
+        });
+    }
+
+    /**
+     * @test Users are removed from the online list when leaving.
+     *
+     * @return void
+     */
+    public function users_are_removed_from_the_online_list_when_leaving()
+    {
+        $users = factory(User::class, 2)->create();
+        
+        $this->browse(function ($browserOne, $browserTwo) use ($users) {
+            $browserOne->loginAs($users->get(0))
+            ->visit(new ChatPage);
+
+            $browserTwo->loginAs($users->get(1))
+            ->visit(new ChatPage);
+
+            $browserOne->with('@onlineList', function ($online) use ($users){// check for second user
+                $online->waitForText($users->get(1)->name)
+                ->assertSee($users->get(1)->name)
+                ->assertSee('2 users online');
+            });
+
+            $browserTwo->quit();
+            $browserOne->with('@onlineList', function ($online) use ($users){// check for second user
+                $online->pause(2000)
+                ->assertDontSee($users->get(1)->name)
+                ->assertSee('1 user online');
             });
         });
     }
